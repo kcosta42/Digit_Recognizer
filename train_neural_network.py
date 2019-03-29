@@ -7,8 +7,8 @@ import numpy as np
 
 from scipy import optimize
 
-X = np.array([])
-y = np.array([])
+X = np.array([[]])
+y = np.array([[]])
 
 def addTrainingExample(x, pred):
   global X, y
@@ -20,15 +20,20 @@ def addTrainingExample(x, pred):
 def main():
   global X, y
 
-  df = pd.read_csv("./datasets/digits.csv", header=None)
-  X = df.values
-  df = pd.read_csv("./datasets/labels.csv", header=None)
-  y = df.values
+  try:
+    df = pd.read_csv("./datasets/digits.csv", header=None)
+    X = df.values
+    df = pd.read_csv("./datasets/labels.csv", header=None)
+    y = df.values
+  except:
+    X = np.array([[]])
+    y = np.array([[]])
 
   sel = np.random.permutation(X)
   sel = sel[0:100]
 
-  display_data(sel)
+  if len(X[0]) != 0:
+    display_data(sel)
 
   input_layer_size = 400
   hidden_layer_size = 25
@@ -45,6 +50,10 @@ def main():
 
     if len(y) == prevLen:
       break
+
+  if len(X[0]) == 0:
+    print("Not enough data... Exiting")
+    return
 
   nn = NeuralNetwork(shape)
   nn.Lambda = 1
